@@ -1,0 +1,29 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "ef6d23e4f57023c45610fc5e080f22d5",
+    "content-hash": "0ac4bdd6f9979d2d94d904cde4492861",
+    "packages": [
+        {
+            "name": "fgelinas/timepicker",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fgelinas/timepicker.git",
+                "reference": "master"
+            },
+            "type": "drupal-library"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

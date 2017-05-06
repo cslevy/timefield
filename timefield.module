@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Contains timefield.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function timefield_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the timefield module.
+    case 'help.page.timefield':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Timefield') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+function timefield_time_validate($element, &$form_state, $form) {
+
+  $delta = $element['#delta'];
+  $field_name = $element['#field_name'];
+
+
+//    // If empty, set to null.
+//    if (strlen($values['value']) == 0) {
+//      if ($field && isset($field['#required']) && $field['#required']) {
+//        form_error($element['value'], t('!name field is required.', array('!name' => \Drupal\Component\Utility\Html::escape($element['#title']))));
+//      }
+//      $form_state->setValueForElement($element, array('value' => NULL));
+//      return;
+//    }
+//    $date_value = date_parse($values['value']);
+//    if ($date_value['error_count']) {
+//      form_error($element['value'], t('The time is not in a format that I understand.'));
+//    }
+//    else {
+//      $parsed_value = timefield_time_to_integer($values['value']);
+//      $new_values['value'] = $parsed_value;
+//    }
+//  }
+}

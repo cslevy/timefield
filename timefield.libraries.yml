@@ -1,0 +1,12 @@
+footable:
+  version: 1.x
+  js:
+    js/footable.js: {}
+
+timepicker:
+  version: 3.x
+  js:
+    /libraries/timepicker/timepicker.js: {}
+  css:
+    component:
+      /libraries/timepicker/timepicker.css: {}
