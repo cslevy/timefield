@@ -46,8 +46,8 @@ class TimeField extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties['value'] = DataDefinition::create('string')
-      ->setLabel(t('Timefield'));
+    $properties['value'] = DataDefinition::create('integer')
+      ->setLabel(t('Timefield2'));
     return $properties;
   }
 }

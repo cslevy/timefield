@@ -1,12 +1,17 @@
-footable:
+timefield:
   version: 1.x
   js:
-    js/footable.js: {}
-
+    js/timefield.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
 timepicker:
-  version: 3.x
+  version: 1.x
   js:
-    /libraries/timepicker/timepicker.js: {}
+    /libraries/timepicker/jquery.ui.timepicker.js: {}
   css:
     component:
-      /libraries/timepicker/timepicker.css: {}
+      /libraries/timepicker/jquery.ui.timepicker.css: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui

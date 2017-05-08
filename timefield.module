@@ -25,25 +25,293 @@ function timefield_help($route_name, RouteMatchInterface $route_match) {
 
 function timefield_time_validate($element, &$form_state, $form) {
 
-  $delta = $element['#delta'];
-  $field_name = $element['#field_name'];
+    // If empty, set to null.
+    if (strlen($element['#value']) == 0) {
+      if (!empty($element['#required'])) {
+        $form_state->setError($element['#value'], $this::t('@name field is required.', array('@name' => \Drupal\Component\Utility\Html::escape($element['#title']))));
+      }
+      $form_state->setValueForElement($element, NULL);
+      return;
+    }
+    $date_value = date_parse($element['#value']);
+    if ($date_value['error_count']) {
+      form_error($element['value'], t('The time is not in a format that I understand.'));
+    }
+    else {
+      $parsed_value = timefield_time_to_integer($element['#value']);
+      $form_state->setValueForElement($element, $parsed_value);
+    }
+
+}
+
+function _timefield_js_settings($class, $settings) {
+
+  $js_settings = array(
+      'showLeadingZero' => $settings['showLeadingZero'],
+      'timeSeparator' => $settings['separator'],
+      'showPeriod' => $settings['showPeriod'],
+      'showPeriodLabels' => $settings['showPeriod'],
+      'periodSeparator' => $settings['periodSeparator'],
+      'amPmText' => array($settings['am_text'], $settings['pm_text']),
+      'showMinutesLeadingZero' => TRUE,
+      'showCloseButton' => $settings['showCloseButton'],
+      'closeButtonText' => $settings['closeButtonText'],
+      'showNowButton' =>  $settings['showNowButton'],
+      'nowButtonText' => $settings['nowButtonText'],
+      'showDeselectButton' => $settings['showDeselectButton'],
+      'deselectButtonText' => $settings['deselectButtonText'],
+      'myPosition' => $settings['myPosition'],
+      'atPosition' => $settings['atPosition'],
+  );
+
+  return $js_settings;
+}
+
+/**
+ * Helper function to return time value from a timefield integer.
+ *
+ * @param array $settings
+ *   Field formatter settings.  This is a structured array used to format a date
+ *   with PHP's date() function.  This array has the following keys:
+ *     -separator
+ *       The character(s) the go(es) between the hour and minute value
+ *     -period_separator
+ *       The character(s) the go(es) between the time string and the period
+ *       (AM/PM)
+ *     -period
+ *       The PHP formatting option for period, or "none" to omit display
+ *     -hour
+ *       The PHP formatting option for hour
+ *     -minute
+ *       The PHP formatting option for minute
+ *    @see _timefield_time_part_format() for some possible options.  It is worth
+ *    noting that no assumptions are made about how one wishes to format date
+ *    output, e.g., 24-hour formatted times are not assumed to not have AM/PM
+ *    period information.
+ * @param integer $value
+ *   Integer offset from midnight to be converted to human-readable time.  This
+ *   value is basically number of seconds from midnight.  If you wish to
+ *   to show a time +1 day, your value can be greater than 86400.
+ *
+ * @return string
+ *   Human-readable time string
+ */
+function timefield_integer_to_time($settings, $value) {
+  $format = timefield_build_time_format($settings);
+  if (isset($value)) {
+    if ($value >= 86400) {
+      $value = $value - 86400;
+    }
+    return date($format, mktime(0, 0, $value));
+  }
+  else {
+    return '';
+  }
+}
+
+/**
+ * Helper function to return duration value from a timefield integer value, in
+ * specified format.
+ *
+ * @param integer $value
+ *   Time value in seconds
+ * @param string $format
+ *   Out format options. Possible options are:
+ *     -hours
+ *     -minutes
+ *     -seconds
+ *     -time
+ *
+ *  @return string
+ *    Integer cast to string or string depending on $format passed.
+ */
+function timefield_integer_to_duration($value, $format) {
+
+  switch ($format) {
+    case 'hours':
+      return (string) round(($value / 60 / 60), 2);
+      break;
+    case 'minutes':
+      return (string) round(($value / 60), 2);
+      break;
+    case 'seconds':
+      return (string) $value;
+      break;
+    case 'time':
+      return date('g:i', mktime(NULL, NULL, $value));
+      break;
+  }
+}
+
+/**
+ * Helper function to return integer value offset from midnight from time
+ * format.
+ *
+ * @param string $value
+ *   Time format that should be parsable via date_parse().
+ */
+function timefield_time_to_integer($value) {
+  $time = date_parse($value);
+  $output = 0;
+  if ($time['error_count'] == 0) {
+    $output += $time['hour'] * 60 * 60;
+    $output += $time['minute'] * 60;
+    $output += $time['second'];
+    return $output;
+  }
+  else {
+    return 0;
+  }
+}
+
+/**
+ * Helper function to return duration value from 2 values, in specified format.
+ *
+ * @param integer $value
+ *   First time value
+ * @param integer $value2
+ *   Second time value
+ * @param string $format
+ *   Out format options. Possible options are:
+ *     -hours
+ *     -minutes
+ *     -seconds
+ *     -time
+ *
+ *  @return mixed
+ *    Integer or string depending on $format passed
+ */
+function timefield_time_to_duration($value, $value2, $format) {
+
+  if ($value2 < $value) {
+    $value2 += 86400;
+  }
+  $duration = $value2 - $value;
+
+  switch ($format) {
+    case 'hours':
+      return round(($duration / 60 / 60), 2);
+      break;
+    case 'minutes':
+      return round(($duration / 60), 2);
+      break;
+    case 'seconds':
+      return $duration;
+      break;
+    case 'time':
+      return date('g:i', mktime(NULL, NULL, $duration));
+      break;
+  }
+
+  return 0;
+}
+
+function template_preprocess_timefield(&$variables) {
+
+  if ($variables['format'] == 'default') {
+    // Encode the time elements.
+    $variables['time']['value'] = \Drupal\Component\Utility\Html::escape($variables['time']['value']);
+    $variables['time']['formatted_value'] = trim(timefield_integer_to_time($variables['settings']['display_format'], $variables['time']['value']));
+    $variables['time']['time'] = $variables['time']['formatted_value'];
+    if (isset($variables['time']['value2'])) {
+      $variables['time']['value2'] = \Drupal\Component\Utility\Html::escape($variables['time']['value2']);
+      $variables['time']['formatted_value2'] = trim(timefield_integer_to_time($variables['settings']['display_format'], $variables['time']['value2']));
+      $variables['time']['time'] .= ' - ' . $variables['time']['formatted_value2'];
+    }
+
+    if ($variables['settings']['weekly_summary'] || $variables['settings']['weekly_summary_with_label']) {
+      foreach (_timefield_weekly_summary_days() as $day => $day_text) {
+        $days = array();
+        if ((bool) $variables['time'][$day]) {
+          $days[$day] = $day_text;
+        }
+      }
+      if ($days) {
+        $variables['time']['days'] = $days;
+        $variables['time']['time'] = implode(', ', $days) . ' ' . $variables['time']['time'];
+      }
+
+    }
+  }
+}
+
+function _timefield_display_format_form($name, $fieldset_header, $settings) {
+
+  $element[$name] = array(
+    '#title' => \Drupal\Component\Utility\Html::escape($fieldset_header),
+    '#type' => 'fieldset',
+  );
+  $element[$name]['hour'] = array(
+    '#title' => t('Hour Format'),
+    '#type' => 'select',
+    '#default_value' => isset($settings[$name]['hour']) ? $settings[$name]['hour'] : 'g',
+    '#options' => _timefield_time_part_format('hour'),
+  );
+  $element[$name]['minute'] = array(
+    '#title' => t('Minute Format'),
+    '#type' => 'select',
+    '#default_value' => isset($settings[$name]['minute']) ? $settings[$name]['minute'] : 'i',
+    '#options' => _timefield_time_part_format('minute'),
+  );
+  $element[$name]['separator'] = array(
+    '#title' => t('Hour and Minute Separator'),
+    '#type' => 'textfield',
+    '#default_value' => isset($settings[$name]['separator']) ? $settings[$name]['separator'] : ':',
+    '#size' => 10,
+  );
+  $element[$name]['period'] = array(
+    '#title' => t('AM/PM format'),
+    '#type' => 'select',
+    '#default_value' => isset($settings[$name]['period']) ? $settings[$name]['period'] : 'a',
+    '#options' => _timefield_time_part_format('period'),
+  );
+  $element[$name]['period_separator'] = array(
+    '#title' => t('Minute and period separtor'),
+    '#type' => 'textfield',
+    '#default_value' => isset($settings[$name]['period_separator']) ? $settings[$name]['period_separator'] : '',
+    '#size' => 10,
+    '#description' => t('The character used to separate the time from the time period (AM/PM)'),
+  );
+
+  return $element;
+}
+
+function _timefield_time_part_format($part) {
+  $values = array(
+    'hour' => array(
+      'g' => t('12-hour format of an hour without leading zeros'),
+      'G' => t('24-hour format of an hour without leading zeros'),
+      'h' => t('12-hour format of an hour with leading zeros'),
+      'H' => t('24-hour format of an hour with leading zeros'),
+    ),
+    'minute' => array(
+      'i' => t('Minutes with leading Zeros'),
+      'none' => t('Do not display minutes'),
+    ),
+    'period' => array(
+      'a' => t('Lowercase Ante meridiem and Post meridiem (am/pm)'),
+      'A' => t('Uppercase Ante meridiem and Post meridiem (AM/PM)'),
+      'none' => t('Do not display period'),
+    ),
+  );
+
+  return $values[$part];
+}
+
+function timefield_build_time_format($settings) {
+  if (isset($settings['showPeriod'])) {
+    $format = ($settings['showLeadingZero'])?'h':'g';
+    //convert to 12/24 format based on period
+    $format = $settings['showPeriod']?strtolower($format):strtoupper($format);
+    $format .= $settings['separator'] . 'i' ;
+    $format .= $settings['showPeriod']?'a':'';
+  }
+  else {
+    $format = $settings['hour'];
+    $format .= $settings['minute'] == 'none' ? '' : $settings['separator'] . $settings['minute'];
+    $format .= $settings['period'] == 'none' ? '' : $settings['period_separator'] . $settings['period'];
+  }
 
 
-//    // If empty, set to null.
-//    if (strlen($values['value']) == 0) {
-//      if ($field && isset($field['#required']) && $field['#required']) {
-//        form_error($element['value'], t('!name field is required.', array('!name' => \Drupal\Component\Utility\Html::escape($element['#title']))));
-//      }
-//      $form_state->setValueForElement($element, array('value' => NULL));
-//      return;
-//    }
-//    $date_value = date_parse($values['value']);
-//    if ($date_value['error_count']) {
-//      form_error($element['value'], t('The time is not in a format that I understand.'));
-//    }
-//    else {
-//      $parsed_value = timefield_time_to_integer($values['value']);
-//      $new_values['value'] = $parsed_value;
-//    }
-//  }
+  return $format;
 }
