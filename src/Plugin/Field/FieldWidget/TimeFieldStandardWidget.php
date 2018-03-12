@@ -68,32 +68,11 @@ class TimeFieldStandardWidget extends WidgetBase {
     );
 
     $value = isset($items[$delta]) ? timefield_integer_to_time($instance_settings, $items[$delta]->value) : '';
-
-    $value2 = isset($items[$delta]) ? timefield_integer_to_time($instance_settings, $items[$delta]->value2) : '';
-    
     $element['value'] = array(
       '#type' => 'textfield',
       '#title' => \Drupal\Component\Utility\Xss::filter($element['#title']),
-      '#title' =>  t('The begin date'),
       '#description' => \Drupal\Component\Utility\Xss::filter($element['#description']),
       '#default_value' => $value,
-      '#required' => $element['#required'],
-      '#weight' => (isset($element['#weight'])) ? $element['#weight'] : 0,
-      '#delta' => $delta,
-      '#element_validate' => array('timefield_time_validate'),
-      '#attributes' => array(
-        'class' => array(
-          'edit-timefield-timepicker',
-          $instance_class
-        )
-      ),
-    );
-    $element['value2'] = array(
-      '#type' => 'textfield',
-      //'#title' => \Drupal\Component\Utility\Xss::filter($element['#title']),
-      '#title' =>  t('The end date'),
-      '#description' => t('In the case of an empty value, the duration will not be displayed: instead Start Time - End Time of the value, we\'ll see Single Time Value.'),
-      '#default_value' => $value2,
       '#required' => $element['#required'],
       '#weight' => (isset($element['#weight'])) ? $element['#weight'] : 0,
       '#delta' => $delta,
