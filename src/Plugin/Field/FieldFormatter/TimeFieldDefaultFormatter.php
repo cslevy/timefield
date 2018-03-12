@@ -61,6 +61,11 @@ class TimeFieldDefaultFormatter extends FormatterBase {
       if (!empty($item->value)) {
         $element[$delta]['#markup'] = trim(timefield_integer_to_time($settings['display_format'], $item->value));
       }
+      if (!empty($item->value2)) {
+        $element[$delta]['#markup'] = (!empty($item->value)) ?
+          $element[$delta]['#markup'].'-'.trim(timefield_integer_to_time($settings['display_format'], $item->value2)) :
+          trim(timefield_integer_to_time($settings['display_format'], $item->value2));
+      }
     }
 
 
