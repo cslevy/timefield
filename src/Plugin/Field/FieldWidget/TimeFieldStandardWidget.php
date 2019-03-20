@@ -102,114 +102,115 @@ class TimeFieldStandardWidget extends WidgetBase {
       '#default_value' => $this->getSetting('disable_plugin'),
       '#description' => t('Do not use jQuery Timepicker plugin for input.'),
       '#disabled' => (empty($library)),
+      '#attributes' => array(
+        'class' => array(
+          'disable_jquery_plugin'
+        )
+      )
     );
 
-    $elements['input_format'] = array(
-      '#title' => t('Time Input Format'),
-      '#type' => 'fieldset',
-    );
-    $elements['input_format']['separator'] = array(
+    $elements['separator'] = array(
       '#title' => t('Hour and Minute Separator'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('separator'),
       '#size' => 10,
       '#description' => t('The character to use to separate hours and minutes.'),
     );
-    $elements['input_format']['showLeadingZero'] = array(
+    $elements['showLeadingZero'] = array(
       '#title' => t('Show Leading Zero for Hour'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('showLeadingZero'),
       '#description' => t('Whether or not to show a leading zero for hours < 10.'),
     );
-    $elements['input_format']['showPeriod'] = array(
+    $elements['showPeriod'] = array(
       '#title' => t('Show AM/PM Label'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('showPeriod'),
       '#description' => t('Whether or not to show AM/PM on the input textfield both on the widget and in the text field after selecting the time with the widget.'),
     );
-    $elements['input_format']['periodSeparator'] = array(
+    $elements['periodSeparator'] = array(
       '#title' => t('What character should appear between the time and the Period (AM/PM)'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('periodSeparator'),
       '#size' => 10,
       '#description' => t('The character to use to separate the time from the time period (AM/PM).'),
     );
-    $elements['input_format']['am_text'] = array(
+    $elements['am_text'] = array(
       '#title' => t('AM text'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('am_text'),
       '#size' => 10,
     );
-    $elements['input_format']['pm_text'] = array(
+    $elements['pm_text'] = array(
       '#title' => t('PM text'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('pm_text'),
       '#size' => 10,
     );
-    $elements['input_format']['showCloseButton'] = array(
+    $elements['showCloseButton'] = array(
       '#title' => t('Show a Button to Close the Picker Widget'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('showCloseButton'),
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['closeButtonText'] = array(
+    $elements['closeButtonText'] = array(
       '#title' => t('Close Button text'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('closeButtonText'),
       '#size' => 10,
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['showNowButton'] = array(
+    $elements['showNowButton'] = array(
       '#title' => t('Show a Button to Select the Current Time'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('showNowButton'),
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['nowButtonText'] = array(
+    $elements['nowButtonText'] = array(
       '#title' => t('Now Button text'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('nowButtonText'),
       '#size' => 10,
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['showDeselectButton'] = array(
+    $elements['showDeselectButton'] = array(
       '#title' => t('Show a Button to Deselect the time in the Picker Widget'),
       '#type' => 'checkbox',
       '#default_value' => $this->getSetting('showDeselectButton'),
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['deselectButtonText'] = array(
+    $elements['deselectButtonText'] = array(
       '#title' => t('Deselect Button text'),
       '#type' => 'textfield',
       '#default_value' => $this->getSetting('deselectButtonText'),
       '#size' => 10,
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['myPosition'] = array(
+    $elements['myPosition'] = array(
       '#title' => t('my Position'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('myPosition'),
@@ -234,14 +235,14 @@ class TimeFieldStandardWidget extends WidgetBase {
         'right center',
         'right bottom'
       )),
-      '#description' => t('Corner of the timpicker widget dialog to position. See !jquery_info for more info.', array('!jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
+      '#description' => t('Corner of the timpicker widget dialog to position. See @jquery_info for more info.', array('@jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
-    $elements['input_format']['atPosition'] = array(
+    $elements['atPosition'] = array(
       '#title' => t('at Position'),
       '#type' => 'select',
       '#options' => array_combine(array(
@@ -266,14 +267,28 @@ class TimeFieldStandardWidget extends WidgetBase {
         'right bottom'
       )),
       '#default_value' => $this->getSetting('atPosition'),
-      '#description' => t('Where to position "my Position" relative to input widget textfield See !jquery_info for more info.', array('!jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
+      '#description' => t('Where to position "my Position" relative to input widget textfield See @jquery_info for more info.', array('@jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
       '#states' => array(
         'invisible' => array(
-          ':input[name="fields[field_ido][settings_edit_form][settings][disable_plugin]"]' => array('checked' => TRUE),
+          '.disable_jquery_plugin' => array('checked' => TRUE),
         ),
       ),
     );
 
     return $elements;
+  }
+
+  public function settingsSummary() {
+    $summary = parent::settingsSummary(); // TODO: Change the autogenerated stub
+    $settings = $this->getSettings();
+    $summary[] = $this::t('Disable jQuery Timepicker plugin') . ': ' . ($settings['disable_plugin']?'true':'false');
+    $summary[] = $this::t('Hour and Minute Separator') . ': ' . $settings['separator'];
+    $summary[] = $this::t('Show Leading Zero for Hour') . ': ' . ($settings['showLeadingZero']?'true':'false');
+    $summary[] = $this::t('Show AM/PM Label') . ': ' . ($settings['showPeriod']?'true':'false');
+    $summary[] = $this::t('Time and period separator') . ': ' . $settings['periodSeparator'];
+    $summary[] = $this::t('AM text') . ': ' . $settings['am_text'];
+    $summary[] = $this::t('PM text') . ': ' . $settings['pm_text'];
+
+    return $summary;
   }
 }

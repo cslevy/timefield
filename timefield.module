@@ -28,7 +28,7 @@ function timefield_time_validate($element, &$form_state, $form) {
     // If empty, set to null.
     if (strlen($element['#value']) == 0) {
       if (!empty($element['#required'])) {
-        $form_state->setError($element['#value'], $this::t('@name field is required.', array('@name' => \Drupal\Component\Utility\Html::escape($element['#title']))));
+        $form_state->setError($element, t('@name field is required.', array('@name' => \Drupal\Component\Utility\Html::escape($element['#title']))));
       }
       $form_state->setValueForElement($element, NULL);
       return;

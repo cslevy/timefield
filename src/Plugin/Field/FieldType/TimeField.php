@@ -30,6 +30,11 @@ class TimeField extends FieldItemBase {
           'not null' => FALSE,
           'default'  => NULL,
         ),
+        'end_value' => array(
+          'type'     => 'int',
+          'not null' => FALSE,
+          'default'  => NULL,
+        ),
       ),
     );
   }
@@ -39,7 +44,8 @@ class TimeField extends FieldItemBase {
    */
   public function isEmpty() {
     $value = $this->get('value')->getValue();
-    return $value === NULL || $value === '';
+    $end_value = $this->get('end_value')->getValue();
+    return ($value === NULL || $value === '') && ($end_value === NULL || $end_value === '');
   }
 
   /**
@@ -48,6 +54,8 @@ class TimeField extends FieldItemBase {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('integer')
       ->setLabel(t('Timefield'));
+    $properties['end_value'] = DataDefinition::create('integer')
+      ->setLabel(t('Timefield End Value'));
     return $properties;
   }
 }
