@@ -1,6 +1,6 @@
 name: 'Time Field'
 description: 'Implements a time field (HH:MM), with optional to time and weekly repeat value.'
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: Fields
 dependencies:
   - libraries

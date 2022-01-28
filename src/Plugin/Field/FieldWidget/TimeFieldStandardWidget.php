@@ -8,6 +8,7 @@ namespace Drupal\timefield\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 
 /**
  * @FieldWidget(
@@ -94,7 +95,8 @@ class TimeFieldStandardWidget extends WidgetBase {
     $library = \Drupal::service('library.discovery')
       ->getLibraryByName('timefield', 'timepicker');
     if (empty($library)) {
-      drupal_set_message("You will not have enhanced time input widget without downloading the plugin. " . \Drupal::l("Read installation instructions here.", \Drupal\Core\Url::fromUri('http://drupalcode.org/project/timefield.git/blob_plain/HEAD:/README.txt')), 'warning');
+      $instruction_link = Link::fromTextAndUrl("Read installation instructions here.", \Drupal\Core\Url::fromUri('http://drupalcode.org/project/timefield.git/blob_plain/HEAD:/README.txt'));
+      \Drupal::messenger()->addWarning("You will not have enhanced time input widget without downloading the plugin. " . $instruction_link);
     }
     $elements['disable_plugin'] = array(
       '#title' => t('Disable jQuery Timepicker plugin.'),
@@ -235,7 +237,7 @@ class TimeFieldStandardWidget extends WidgetBase {
         'right center',
         'right bottom'
       )),
-      '#description' => t('Corner of the timpicker widget dialog to position. See @jquery_info for more info.', array('@jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
+      '#description' => t('Corner of the timpicker widget dialog to position. See @jquery_info for more info.', array('@jquery_info' => Link::fromTextAndUrl(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
       '#states' => array(
         'invisible' => array(
           '.disable_jquery_plugin' => array('checked' => TRUE),
@@ -267,7 +269,7 @@ class TimeFieldStandardWidget extends WidgetBase {
         'right bottom'
       )),
       '#default_value' => $this->getSetting('atPosition'),
-      '#description' => t('Where to position "my Position" relative to input widget textfield See @jquery_info for more info.', array('@jquery_info' => \Drupal::l(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
+      '#description' => t('Where to position "my Position" relative to input widget textfield See @jquery_info for more info.', array('@jquery_info' => Link::fromTextAndUrl(t("jQuery UI Position documentation"), \Drupal\Core\Url::fromUri('http://jqueryui.com/demos/position')))),
       '#states' => array(
         'invisible' => array(
           '.disable_jquery_plugin' => array('checked' => TRUE),
