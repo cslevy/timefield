@@ -14,4 +14,3 @@ timepicker:
       /libraries/timepicker/jquery.ui.timepicker.css: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui
