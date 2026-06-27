@@ -35,7 +35,7 @@ function timefield_time_validate($element, &$form_state, $form) {
     }
     $date_value = date_parse($element['#value']);
     if ($date_value['error_count']) {
-      form_error($element['value'], t('The time is not in a format that I understand.'));
+      $form_state->setError($element['value'], t('The time is not in a format that I understand.'));
     }
     else {
       $parsed_value = timefield_time_to_integer($element['#value']);
@@ -141,6 +141,7 @@ function timefield_integer_to_duration($value, $format) {
       return date('g:i', mktime(NULL, NULL, $value));
       break;
   }
+  return $value;
 }
 
 /**
@@ -217,20 +218,6 @@ function template_preprocess_timefield(&$variables) {
       $variables['time']['value2'] = \Drupal\Component\Utility\Html::escape($variables['time']['value2']);
       $variables['time']['formatted_value2'] = trim(timefield_integer_to_time($variables['settings']['display_format'], $variables['time']['value2']));
       $variables['time']['time'] .= ' - ' . $variables['time']['formatted_value2'];
-    }
-
-    if ($variables['settings']['weekly_summary'] || $variables['settings']['weekly_summary_with_label']) {
-      foreach (_timefield_weekly_summary_days() as $day => $day_text) {
-        $days = array();
-        if ((bool) $variables['time'][$day]) {
-          $days[$day] = $day_text;
-        }
-      }
-      if ($days) {
-        $variables['time']['days'] = $days;
-        $variables['time']['time'] = implode(', ', $days) . ' ' . $variables['time']['time'];
-      }
-
     }
   }
 }

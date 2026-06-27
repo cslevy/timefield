@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Entity\Sql\SqlContentEntityStorageException;
+
 function timefield_update_8001() {
   $field_type = 'timefield';
   $columns_to_add = ['end_value'];
